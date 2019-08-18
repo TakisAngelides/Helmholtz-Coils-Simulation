@@ -1,5 +1,5 @@
 # Helmholtz-Coils-Simulation
-Simulating the magnetic field of Helmholtz Coils
+Simulating the magnetic field of Helmholtz Coils with python.
 
 The single_coil.py is based on 3 classes, the Wire, Coil and Space classes. 
 It plots the vector field of the x and y components of the magnetic field
