@@ -2,7 +2,6 @@ import numpy as np
 from scipy.constants import mu_0, pi
 import pandas as pd
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 class Wire:
 
