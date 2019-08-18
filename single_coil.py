@@ -58,7 +58,7 @@ def get_mid_point(x1, y1, x2, y2):
 
 class Coil:
 
-    n = 40 # Number of segment wires that form the coil
+    n = 200 # Number of segment wires that form the coil
     radius = 1 # Radius of the coil
 
     def __init__(self, px, py, pz):
@@ -221,7 +221,7 @@ class Space:
 # z num. You can use these variables to essentially zoom in/out on areas in space while the coil remains in its fixed
 # center position defined by px, py, pz. The reason z num is set to 1 is because we are only interested in making a plot
 # of the x-y plane for the field.
-space = Space(-0.6, 0.6,50, -1.5,1.5,50, -0.7,0.7,1)
+space = Space(-1, 1,300, -1.2,1.2,300, 0,1,1)
 
 # Create the coil in this space at this position for its center
 coil_1 = Coil(px = 0, py = 0, pz = 0)
@@ -244,12 +244,59 @@ df = pd.concat([px_data_df, py_data_df, pz_data_df, Bx_data_df, By_data_df, Bz_d
 
 def plot_Bx_By_field():
     # Quiver generates a vector field plot using the first 2 lists as the axis of the plot and the other 2 lists as
-    # the vector components
-    plt.quiver(px_data, py_data, Bx_data, By_data, scale = 90)
+    # the vector components. The space object must have the same x and y num when initialized to make this plot.
+    plt.quiver(px_data, py_data, Bx_data, By_data, scale = 85)
     plt.xlabel('x')
     plt.ylabel('y')
     # Center depends on px, py, pz when initializing the Coil object
-    plt.title(f'Vector field for Bx, By (Coil with radius 1, center (0, 0, 0))')
+    plt.title(f'Vector field for Bx, By\n(Single Coil with radius 1, center (0, 0, 0))')
+    plt.savefig('field_single_coil.pdf', bbox = 'tight')
     plt.show()
 
+def get_theoretical_axis_field():
+    """
+    :return: (list) Bx theoretical values on the x-axis
+    """
+    x_axis_values = px_data
+    B_field_x = (mu_0*Wire.current*Coil.radius**2)/(2*(Coil.radius**2 + np.array(x_axis_values)**2)**(3/2))
+    return B_field_x
+
+# Theoretical field on the x-axis
+Bx_theoretical = get_theoretical_axis_field()
+
+# Calculate and the mean squared error between theory and simulation on x-axis
+x_axis_theory = np.array(Bx_theoretical)
+x_axis_simulation = np.array(Bx_data)
+MSE_array = np.sqrt((x_axis_simulation - x_axis_theory)**2)
+MSE_x_axis = sum(MSE_array)
+
+
+def plot_theory_and_simulation():
+    # Plot theory and simulation Bx values on the x-axis, to use this plot function make sure space is initialised
+    # with only 1 point on the y and z axes, eg: space = Space(-1, 1,300, 0,1,1, 0,1,1)
+    plt.plot(px_data, Bx_data, color='r')
+    plt.plot(px_data, Bx_theoretical, color='k', linestyle='--')
+    plt.xlabel('x')
+    plt.ylabel('Bx')
+    plt.title(f'Magnetic field on the x-axis\n(Single Coil with radius 1, center (0, 0, 0))')
+    plt.legend(['Simulation', 'Theoretical'])
+    plt.grid(True)
+    plt.savefig('theory_vs_simulation_x_axis.pdf', bbox = 'tight')
+    plt.show()
+
+def plot_MSE_vs_n():
+    # Plot mean squared error between simulation and theory for the x-axis vs n segment wires
+    n_values = [200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000]
+    MSE_values = [0.0050418, 0.0012604, 0.00056016, 0.00031509, 0.00020166, 0.00014004, 0.00010289, 0.000078772, 0.000062239, 0.000050414]
+    plt.plot(n_values, MSE_values, color = 'k')
+    plt.xlabel('n')
+    plt.ylabel('MSE')
+    plt.title('Mean squared error vs n segment wires')
+    plt.grid(True)
+    plt.savefig('mse_vs_n.pdf', bbox = 'tight')
+    plt.show()
+
+
 plot_Bx_By_field()
+#plot_theory_and_simulation()
+#plot_MSE_vs_n()
