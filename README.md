@@ -14,3 +14,11 @@ in the space class to find the field caused by both coils and add them to get th
 final magnetic field solution. This program plots the vector field in the x,y plane
 and makes a contour plot of the strength of the magnetic field near the center of the
 system.
+
+File helmholtz_coils_2.py creates a cylindrical space and calculates the percentage 
+difference of the magnetic field strength at all points in space to the strength at
+(0, 0, 0).
+
+The program N_coils.py creates N coils in the space and simulates the magnetic field
+contributed from all N coils. It then makes plots of the vector field in the x-y plane
+with coloured vectors and creates contour plots for the magnetic field strength.
