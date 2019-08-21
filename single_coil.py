@@ -298,5 +298,5 @@ def plot_MSE_vs_n():
 
 
 plot_Bx_By_field()
-#plot_theory_and_simulation()
-#plot_MSE_vs_n()
+plot_theory_and_simulation()
+plot_MSE_vs_n()
